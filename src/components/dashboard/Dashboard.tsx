@@ -35,11 +35,11 @@ export const Dashboard = ({ peminjaman, isAdmin, kendaraan, ruangan }: Dashboard
   };
 
   const handleExportKendaraan = () => {
-    exportMonthlyStats(monthlyStats, selectedYear, 'kendaraan');
+    exportMonthlyStats(monthlyStats, selectedYear);
   };
 
   const handleExportRuangan = () => {
-    exportMonthlyStats(monthlyStats, selectedYear, 'ruangan');
+    exportMonthlyStats(monthlyStats, selectedYear);
   };
 
   const handleExportDetailKendaraan = () => {
