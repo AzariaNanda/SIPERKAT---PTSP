@@ -41,10 +41,19 @@ export const exportMonthlyStats = (stats: MonthlyStats[], year: number) => {
   XLSX.writeFile(workbook, `Laporan_Peminjaman_${year}.xlsx`);
 };
 
-export const exportDetailedData = (peminjaman: Peminjaman[], year: number, month?: number) => {
-  const data = peminjaman.map(p => ({
+export const exportDetailedData = (
+  peminjaman: Peminjaman[], 
+  year: number, 
+  jenisAsset: 'kendaraan' | 'ruangan',
+  getAssetName: (assetId: string, jenis: 'kendaraan' | 'ruangan') => string
+) => {
+  // Filter by asset type
+  const filtered = peminjaman.filter(p => p.jenis_asset === jenisAsset);
+  
+  const data = filtered.map(p => ({
     'Tanggal Pengajuan': new Date(p.timestamp).toLocaleDateString('id-ID'),
-    'Jenis': p.jenis === 'kendaraan' ? 'Kendaraan' : 'Ruangan',
+    'Jenis': p.jenis_asset === 'kendaraan' ? 'Kendaraan' : 'Ruangan',
+    'Aset': getAssetName(p.asset_id, p.jenis_asset),
     'Nama Pemohon': p.nama_pemohon,
     'NIP': p.nip,
     'Unit/Bidang': p.unit,
@@ -55,15 +64,14 @@ export const exportDetailedData = (peminjaman: Peminjaman[], year: number, month
     'Jam Selesai': p.jam_selesai,
     'Keperluan': p.keperluan,
     'Status': p.status,
-    'Memerlukan Supir': p.supir ? 'Ya' : 'Tidak',
+    'Catatan Admin': p.catatan_admin || '-',
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(data);
   const workbook = XLSX.utils.book_new();
   
-  const sheetName = month 
-    ? `Peminjaman Bulan ${month}` 
-    : `Peminjaman ${year}`;
+  const jenisLabel = jenisAsset === 'kendaraan' ? 'Kendaraan' : 'Ruangan';
+  const sheetName = `Peminjaman ${jenisLabel}`;
   
   XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 
@@ -71,6 +79,7 @@ export const exportDetailedData = (peminjaman: Peminjaman[], year: number, month
   worksheet['!cols'] = [
     { wch: 18 },
     { wch: 12 },
+    { wch: 25 },
     { wch: 25 },
     { wch: 20 },
     { wch: 20 },
@@ -81,12 +90,10 @@ export const exportDetailedData = (peminjaman: Peminjaman[], year: number, month
     { wch: 10 },
     { wch: 40 },
     { wch: 12 },
-    { wch: 15 },
+    { wch: 20 },
   ];
 
-  const filename = month 
-    ? `Detail_Peminjaman_${year}_Bulan${month}.xlsx`
-    : `Detail_Peminjaman_${year}.xlsx`;
+  const filename = `Detail_Peminjaman_${jenisLabel}_${year}.xlsx`;
     
   XLSX.writeFile(workbook, filename);
 };
