@@ -14,16 +14,171 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      data_peminjaman: {
+        Row: {
+          asset_id: string
+          catatan_admin: string | null
+          created_at: string
+          email: string
+          id: string
+          jam_mulai: string
+          jam_selesai: string
+          jenis_asset: Database["public"]["Enums"]["jenis_asset"]
+          keperluan: string
+          nama_pemohon: string
+          nip: string
+          status: Database["public"]["Enums"]["status_peminjaman"]
+          tgl_mulai: string
+          tgl_selesai: string
+          timestamp: string
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          asset_id: string
+          catatan_admin?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          jam_mulai: string
+          jam_selesai: string
+          jenis_asset: Database["public"]["Enums"]["jenis_asset"]
+          keperluan: string
+          nama_pemohon: string
+          nip: string
+          status?: Database["public"]["Enums"]["status_peminjaman"]
+          tgl_mulai: string
+          tgl_selesai: string
+          timestamp?: string
+          unit: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          asset_id?: string
+          catatan_admin?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          jam_mulai?: string
+          jam_selesai?: string
+          jenis_asset?: Database["public"]["Enums"]["jenis_asset"]
+          keperluan?: string
+          nama_pemohon?: string
+          nip?: string
+          status?: Database["public"]["Enums"]["status_peminjaman"]
+          tgl_mulai?: string
+          tgl_selesai?: string
+          timestamp?: string
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      master_kendaraan: {
+        Row: {
+          created_at: string
+          foto_url: string | null
+          id: string
+          nama_kendaraan: string
+          no_polisi: string
+          penempatan: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          foto_url?: string | null
+          id?: string
+          nama_kendaraan: string
+          no_polisi: string
+          penempatan: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          foto_url?: string | null
+          id?: string
+          nama_kendaraan?: string
+          no_polisi?: string
+          penempatan?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      master_ruangan: {
+        Row: {
+          created_at: string
+          foto_url: string | null
+          id: string
+          kapasitas: number
+          lokasi: string
+          nama_ruangan: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          foto_url?: string | null
+          id?: string
+          kapasitas?: number
+          lokasi: string
+          nama_ruangan: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          foto_url?: string | null
+          id?: string
+          kapasitas?: number
+          lokasi?: string
+          nama_ruangan?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      jenis_asset: "kendaraan" | "ruangan"
+      status_peminjaman: "Pending" | "Disetujui" | "Ditolak" | "Konflik"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +305,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      jenis_asset: ["kendaraan", "ruangan"],
+      status_peminjaman: ["Pending", "Disetujui", "Ditolak", "Konflik"],
+    },
   },
 } as const
