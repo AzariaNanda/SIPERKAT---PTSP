@@ -1,42 +1,37 @@
 export interface Kendaraan {
-  id: string;
+  id: number;
   nama_kendaraan: string;
   no_polisi: string;
   penempatan: string;
-  foto_url: string | null;
-  created_at: string;
-  updated_at: string;
+  foto_url: string;
 }
 
 export interface Ruangan {
-  id: string;
+  id: number;
   nama_ruangan: string;
   lokasi: string;
   kapasitas: number;
-  foto_url: string | null;
-  created_at: string;
-  updated_at: string;
+  foto_url: string;
 }
 
 export interface Peminjaman {
-  id: string;
+  id: number;
   timestamp: string;
-  user_id: string;
+  jenis: 'kendaraan' | 'ruangan';
   nama_pemohon: string;
   nip: string;
   unit: string;
   email: string;
   asset_id: string;
-  jenis_asset: 'kendaraan' | 'ruangan';
+  assetId: number;
   tgl_mulai: string;
   jam_mulai: string;
   tgl_selesai: string;
   jam_selesai: string;
   keperluan: string;
+  supir: boolean;
   status: 'Pending' | 'Disetujui' | 'Ditolak' | 'Konflik';
-  catatan_admin: string | null;
-  created_at: string;
-  updated_at: string;
+  catatan_admin: string;
 }
 
 export interface MonthlyStats {
@@ -47,11 +42,6 @@ export interface MonthlyStats {
   total: number;
 }
 
-export interface UserRole {
-  id: string;
-  user_id: string;
-  role: 'admin' | 'user';
-  created_at: string;
+export interface User {
+  email: string;
 }
-
-export type AppRole = 'admin' | 'user';
