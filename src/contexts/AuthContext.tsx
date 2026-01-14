@@ -11,7 +11,8 @@ interface AuthContextType {
   role: AppRole;
   isAdmin: boolean;
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -93,19 +94,51 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signInWithGoogle = async () => {
+  const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
+    // Check if email is allowed before attempting login
+    if (!ALLOWED_EMAILS.includes(email)) {
+      return { error: 'Akses Ditolak. Email tidak terdaftar dalam sistem.' };
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      if (error.message === 'Invalid login credentials') {
+        return { error: 'Email atau password salah' };
+      }
+      return { error: error.message };
+    }
+
+    return { error: null };
+  };
+
+  const signUp = async (email: string, password: string): Promise<{ error: string | null }> => {
+    // Check if email is allowed before attempting signup
+    if (!ALLOWED_EMAILS.includes(email)) {
+      return { error: 'Akses Ditolak. Email tidak terdaftar dalam sistem.' };
+    }
+
     const redirectUrl = `${window.location.origin}/`;
-    
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
       options: {
-        redirectTo: redirectUrl,
+        emailRedirectTo: redirectUrl,
       },
     });
 
     if (error) {
-      toast.error('Gagal login: ' + error.message);
+      if (error.message.includes('already registered')) {
+        return { error: 'Email sudah terdaftar. Silakan login.' };
+      }
+      return { error: error.message };
     }
+
+    return { error: null };
   };
 
   const signOut = async () => {
@@ -126,7 +159,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     role,
     isAdmin: role === 'admin',
     loading,
-    signInWithGoogle,
+    signIn,
+    signUp,
     signOut,
   };
 
